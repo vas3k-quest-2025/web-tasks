@@ -1,0 +1,15 @@
+{
+  "name": "vas3k-quest-25",
+  "version": "1.0.0",
+  "description": "Vas3k Quest 25 Web Tasks",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev"
+  },
+  "dependencies": {
+    "itty-router": "^4.0.27"
+  },
+  "devDependencies": {
+    "wrangler": "^3.28.1"
+  }
+} 
