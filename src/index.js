@@ -15,9 +15,14 @@ router.all('*', async (request) => {
   }
 });
 
+router.all('/', () => new Response('Welcome to the Vas3k Quest 2025!', { status: 200 }));
+
 // Обработчик для проверки заданий
-router.post('/check/:taskName', async (request, { taskName }) => {
+router.post('/check/:taskName', async (request) => {
+     
   try {
+    const taskName = request.params?.taskName;
+
     const data = await request.json();
     let result;
 
@@ -36,20 +41,39 @@ router.post('/check/:taskName', async (request, { taskName }) => {
     }
 
     return new Response(JSON.stringify(result), {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ success: false, message: error.message }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
     });
   }
 });
 
 // Функции проверки заданий
 async function checkBlindKeyboard(data) {
-  // TODO: Реализовать проверку для задания с клавиатурой
-  return { success: true, message: 'Blind keyboard check passed' };
+  const targetText = "Анализ показал, что при высокой нагрузке на имплант наблюдается рост латентных отклонений в когнитивной активности носителя.";
+  const normalizedTargetText = targetText.replace(/\n/g, ' ');
+  const normalizedUserText = data.text.replace(/\n/g, ' ');
+
+  if (normalizedUserText === normalizedTargetText) {
+    return {
+      success: true,
+      code: "ЗУБРИЛКА"
+    };
+  }
+
+  return {
+    success: false,
+    message: "Текст набран неверно"
+  };
 }
 
 async function checkHoverboardMaze(data) {
@@ -57,9 +81,26 @@ async function checkHoverboardMaze(data) {
   return { success: true, message: 'Hoverboard maze check passed' };
 }
 
+// Обработка статических файлов
+router.get('*', async (request, env) => {
+  try {
+    // Пытаемся получить файл из статического хранилища
+    const response = await env.ASSETS.fetch(request);
+    if (response.status === 200) {
+      return response;
+    }
+    
+    // Если файл не найден, возвращаем 404
+    return new Response('Not Found', { status: 404 });
+  } catch (error) {
+    console.error('Error serving static file:', error);
+    return new Response('Internal Server Error', { status: 500 });
+  }
+});
+
 // Обработка всех остальных запросов
 router.all('*', () => new Response('Not Found', { status: 404 }));
 
 export default {
-  fetch: router.handle
+  fetch: (request, env, ctx) => router.handle(request, env, ctx)
 }; 

@@ -3,15 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1337 Blind Keyboard</title>
+    <title>Тест набора текста</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <div class="container">
-        <h1>1337 Blind Keyboard</h1>
-        <div id="keyboard" class="keyboard"></div>
-        <div id="output" class="output"></div>
+        <div class="top-half">
+            <div class="text-to-type">
+                <!-- Текст для набора будет здесь -->
+                <p id="target-text"></p>
+            </div>
+            <div class="typing-area">
+                <textarea id="user-input" placeholder="Начните печатать здесь..."></textarea>
+            </div>
+        </div>
+        <div class="bottom-half">
+            <!-- Заглушка для картинки клавиатуры -->
+            <div class="keyboard-placeholder">
+                <img src="image.png" alt="Изображение раскладки клавиатуры">
+            </div>
+        </div>
     </div>
+
+    <div class="overlay" id="success-overlay">
+        <div class="overlay-content">
+            <h2>Поздравляем!</h2>
+            <p id="success-message">Текст набран верно!</p>
+            <p>Окно закроется через <span id="timer">10</span> секунд.</p>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
-</html> 
+</html>
