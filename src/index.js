@@ -15,8 +15,6 @@ router.all('*', async (request) => {
   }
 });
 
-router.all('/', () => new Response('Welcome to the Vas3k Quest 2025!', { status: 200 }));
-
 // Обработчик для проверки заданий
 router.post('/check/:taskName', async (request) => {
      
@@ -80,6 +78,12 @@ async function checkHoverboardMaze(data) {
   // TODO: Реализовать проверку для задания с лабиринтом
   return { success: true, message: 'Hoverboard maze check passed' };
 }
+
+// CTF flag
+router.get('/.env', () => new Response('API_JWT_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmbGFnIjoiQ1RGe2JyMGszbl9jMG50cjBsfSIsImNvbmdyYXR1bGF0aW9ucyI6IllvdSBmb3VuZCBpdCEifQ.vq9EpJxV1OWg1aibQNfw0zl6OL08hdU0pCSXwgv6TXs'));
+
+// Главная страница
+router.all('/', () => new Response('Welcome to the Vas3k Quest 2025!', { status: 200 }));
 
 // Обработка статических файлов
 router.get('*', async (request, env) => {
