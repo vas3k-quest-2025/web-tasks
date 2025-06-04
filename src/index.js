@@ -31,6 +31,9 @@ router.post('/check/:taskName', async (request) => {
       case 'c0mpl3x_h0w3rb04rd_m4z3':
         result = await checkHoverboardMaze(data);
         break;
+      case 'andr01d_ch4rg1ng_st4t10n':
+        result = await checkAndroidCharging(data);
+        break;
       default:
         return new Response(JSON.stringify({ error: 'Unknown task' }), {
           status: 404,
@@ -129,7 +132,82 @@ async function checkHoverboardMaze(data) {
   // Если все проверки пройдены, возвращаем код
   return {
     success: true,
-    code: "ГРАВИТАЦИЯ"
+    code: "БАЛАНС"
+  };
+}
+
+async function checkAndroidCharging(data) {
+  const solution = data.solution;
+  
+  // Проверяем, что решение существует и не пустое
+  if (!solution || !Array.isArray(solution)) {
+    return { success: false, message: 'Неверный формат решения' };
+  }
+
+  // Проверяем количество андроидов
+  if (solution.length !== 14) {
+    return { success: false, message: 'Неверное количество андроидов' };
+  }
+
+  // Проверяем, что все андроиды находятся рядом с розетками
+  const socketCells = [
+    {x: 0, y: 4}, {x: 0, y: 5}, {x: 1, y: 1}, {x: 1, y: 6},
+    {x: 2, y: 0}, {x: 3, y: 0}, {x: 3, y: 3}, {x: 4, y: 4},
+    {x: 4, y: 7}, {x: 5, y: 7}, {x: 6, y: 1}, {x: 6, y: 6},
+    {x: 7, y: 2}, {x: 7, y: 3}
+  ];
+
+  for (const android of solution) {
+    // Проверяем, что андроид не на розетке
+    if (socketCells.some(socket => socket.x === android.x && socket.y === android.y)) {
+      return { success: false, message: 'Андроид не может находиться на розетке' };
+    }
+
+    // Проверяем, что рядом есть розетка
+    const hasAdjacentSocket = socketCells.some(socket => {
+      const dx = Math.abs(socket.x - android.x);
+      const dy = Math.abs(socket.y - android.y);
+      return (dx === 1 && dy === 0) || (dx === 0 && dy === 1);
+    });
+
+    if (!hasAdjacentSocket) {
+      return { success: false, message: 'Андроид должен находиться рядом с розеткой' };
+    }
+  }
+
+  // Проверяем, что андроиды не соседствуют друг с другом
+  for (let i = 0; i < solution.length; i++) {
+    for (let j = i + 1; j < solution.length; j++) {
+      const dx = Math.abs(solution[i].x - solution[j].x);
+      const dy = Math.abs(solution[i].y - solution[j].y);
+      if (dx <= 1 && dy <= 1) {
+        return { success: false, message: 'Андроиды не могут находиться рядом друг с другом' };
+      }
+    }
+  }
+
+  // Проверяем количество андроидов в каждом ряду
+  const rowCounts = [2, 2, 1, 1, 3, 1, 2, 2];
+  for (let y = 0; y < 8; y++) {
+    const count = solution.filter(android => android.y === y).length;
+    if (count !== rowCounts[y]) {
+      return { success: false, message: 'Неверное количество андроидов в ряду' };
+    }
+  }
+
+  // Проверяем количество андроидов в каждом столбце
+  const colCounts = [2, 2, 1, 2, 1, 2, 2, 2];
+  for (let x = 0; x < 8; x++) {
+    const count = solution.filter(android => android.x === x).length;
+    if (count !== colCounts[x]) {
+      return { success: false, message: 'Неверное количество андроидов в столбце' };
+    }
+  }
+
+  // Если все проверки пройдены, возвращаем код
+  return {
+    success: true,
+    code: "ЛИТИЙ"
   };
 }
 

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Станция зарядки андроидов</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Станция зарядки андроидов</h1>
+        <div class="description">
+            Андроиды пришли на подзарядку. К каждой розетке подключился ровно один андроид, который занял соседнюю по стороне клетку с розеткой. Андроиды не могут находиться в соседних (даже углом) клетках. Цифры по сторонам указывают число андроидов в соответствующем ряду. Восстановите расположение андроидов.
+        </div>
+        <div class="grid-container">
+            <div class="numbers-top"></div>
+            <div class="grid-wrapper">
+                <div class="numbers-left"></div>
+                <div id="grid" class="grid"></div>
+            </div>
+        </div>
+        <div class="controls">
+            <button id="resetBtn">Сбросить</button>
+        </div>
+        <div id="message" class="message"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
