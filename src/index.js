@@ -28,7 +28,7 @@ router.post('/check/:taskName', async (request) => {
       case '1337_b1ind_k3yb04rd':
         result = await checkBlindKeyboard(data);
         break;
-      case 'c0mp13x_h0w3rb04rd_maze':
+      case 'c0mpl3x_h0w3rb04rd_m4z3':
         result = await checkHoverboardMaze(data);
         break;
       default:
@@ -75,8 +75,62 @@ async function checkBlindKeyboard(data) {
 }
 
 async function checkHoverboardMaze(data) {
-  // TODO: Реализовать проверку для задания с лабиринтом
-  return { success: true, message: 'Hoverboard maze check passed' };
+  const path = data.path;
+  
+  // Проверяем, что путь существует и не пустой
+  if (!path || !Array.isArray(path) || path.length === 0) {
+    return { success: false, message: 'Неверный формат пути' };
+  }
+
+  // Проверяем, что путь начинается и заканчивается в точке (0,0)
+  if (path[0].x !== 0 || path[0].y !== 0 || 
+      path[path.length - 1].x !== 0 || path[path.length - 1].y !== 0) {
+    return { success: false, message: 'Путь должен начинаться и заканчиваться в точке (0,0)' };
+  }
+
+  // Проверяем, что все ходы валидны
+  for (let i = 1; i < path.length; i++) {
+    const prev = path[i - 1];
+    const curr = path[i];
+    
+    // Проверяем, что ход сделан на соседнюю клетку
+    const dx = Math.abs(curr.x - prev.x);
+    const dy = Math.abs(curr.y - prev.y);
+    if (!((dx === 1 && dy === 0) || (dx === 0 && dy === 1))) {
+      return { success: false, message: 'Неверный ход: можно ходить только на соседнюю клетку' };
+    }
+  }
+
+  // Проверяем, что все доступные клетки посещены
+  const size = 7;
+  const occupiedCells = [
+    {x: 4, y: 0},
+    {x: 2, y: 1},
+    {x: 4, y: 2},
+    {x: 2, y: 4},
+    {x: 3, y: 6}
+  ];
+
+  const visitedCells = new Set();
+  path.forEach(point => {
+    visitedCells.add(`${point.x},${point.y}`);
+  });
+
+  // Проверяем, что все не занятые клетки посещены
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const isOccupied = occupiedCells.some(cell => cell.x === x && cell.y === y);
+      if (!isOccupied && !visitedCells.has(`${x},${y}`)) {
+        return { success: false, message: 'Не все клетки посещены' };
+      }
+    }
+  }
+
+  // Если все проверки пройдены, возвращаем код
+  return {
+    success: true,
+    code: "ГРАВИТАЦИЯ"
+  };
 }
 
 // CTF flag
