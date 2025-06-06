@@ -40,7 +40,7 @@ class AndroidChargingGame {
     
     createNumbers() {
         // Создаем числа сверху
-        this.numbersTop.innerHTML = '';
+        this.numbersTop.innerHTML = '<div></div>';
         this.topNumbers.forEach(num => {
             const div = document.createElement('div');
             div.textContent = num;
