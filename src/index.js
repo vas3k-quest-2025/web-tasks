@@ -132,7 +132,7 @@ async function checkHoverboardMaze(data) {
   // Если все проверки пройдены, возвращаем код
   return {
     success: true,
-    code: "БАЛАНС"
+    code: "УПОРСТВО"
   };
 }
 
